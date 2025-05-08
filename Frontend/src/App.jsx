@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import Demo1 from './pages/Demo1';
 import Demo2 from './pages/Demo2';
+import SignIn from './pages/SignIn';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element = {<Home/>}/>
             <Route path="/demo1" element = {<Demo1/>}/>
             <Route path="/demo2" element = {<Demo2/>}/>
+            <Route path="/signin" element = {<SignIn/>}/>
           </Routes>
         </div>
       </div>
