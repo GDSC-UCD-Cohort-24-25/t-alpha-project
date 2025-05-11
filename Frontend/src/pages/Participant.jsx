@@ -79,7 +79,7 @@ export default function Participant() {
         />
       )}
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/researcher')}
         className="px-4 py-2 bg-blue-500 text-white"
       >
         Done
