@@ -1,4 +1,3 @@
-// SignIn.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -14,7 +13,7 @@ export default function SignIn() {
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/home');
+      navigate('/demo2');  // Change to researcher side later
     } catch {
       setError('Invalid username or password.');
     }
@@ -48,5 +47,5 @@ export default function SignIn() {
         </button>
       </form>
     </div>
-);
+  );
 }
