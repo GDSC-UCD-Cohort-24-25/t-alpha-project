@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+.survey-container {
+  @apply w-1/6 mx-auto p-4 bg-white rounded shadow;
+}
+
+.survey-loading {
+  @apply text-center text-gray-600;
+}
+
+.survey-question {
+  @apply mb-2 text-lg font-medium text-center;
+  color: #000000;
+}
+
+.survey-textarea {
+  @apply block mx-auto border rounded p-2 text-black;
+  @apply w-30;
+  @apply h-10; 
+}
+
+.survey-nav {
+  @apply flex justify-between mt-4;
+}
+
+.survey-btn {
+  @apply px-4 py-2 rounded;
+}
+
+.survey-btn-prev {
+  @apply bg-gray-200 text-gray-700 disabled:opacity-50;
+}
+
+.survey-btn-next {
+  @apply bg-blue-500 text-white;
+}
+
+.survey-btn-submit {
+  @apply bg-green-500 text-white;
+}
