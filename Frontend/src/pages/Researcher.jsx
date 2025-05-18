@@ -1,59 +1,19 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import {
-  NavLink,
-  useNavigate,
-  useLocation
-} from 'react-router-dom';
-
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { Navigate } from 'react-router-dom';
 
-import Sidebar from '../components/Sidebar';
-
-export default function Dashboard() {
-  const navigate  = useNavigate();
-  const { pathname } = useLocation();
-
-  // 1) auth state
-  const [user,    setUser]    = useState(null);
+export default function Researcher() {
   const [loading, setLoading] = useState(true);
+  const [user, setUser]       = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, u => {
       setUser(u);
       setLoading(false);
-      if (!u) {
-        navigate('/signin', { replace: true });
-      }
     });
     return unsubscribe;
-  }, [navigate]);
-
-  // 2) mock studies data
-  const [studies, setStudies] = useState({ current: [], past: [] });
-  useEffect(() => {
-    setStudies({
-      current: [
-        { id: '1', title: 'Endurance Study', date: '05/01/2025' },
-        { id: '2', title: 'Memory Recall',  date: '05/03/2025' },
-        { id: '3', title: 'Cognitive Load',  date: '05/05/2025' },
-      ],
-      past: [
-        { id: '4', title: 'Sleep Patterns', date: '04/20/2025' },
-        { id: '5', title: 'Reaction Times', date: '04/15/2025' },
-      ]
-    });
   }, []);
-
-  // determine which tab is active
-  const tab = pathname.includes('/past') ? 'past' : 'current';
-
-  // 3) logout handler
-  const handleSignOut = async () => {
-    await signOut(auth);
-    navigate('/signin', { replace: true });
-  };
 
   if (loading) {
     return (
@@ -63,79 +23,24 @@ export default function Dashboard() {
     );
   }
 
- 
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+  };
 
   return (
-    <div className="flex h-screen w-screen">
-      {/* Sidebar on the left */}
-      <Sidebar />
-
-      {/* Main content */}
-      <div className="flex-1 flex flex-col bg-gray-50">
-        {/* Header: tabs + logout */}
-        <div className="flex items-center justify-between border-b bg-white px-6 py-3">
-          <nav className="flex space-x-4">
-            <NavLink
-              to="current"
-              end
-              className={({ isActive }) =>
-                isActive
-                  ? 'border-b-2 border-blue-600 pb-1 text-blue-600'
-                  : 'text-gray-600 pb-1'
-              }
-            >
-              Current Studies
-            </NavLink>
-            <NavLink
-              to="past"
-              className={({ isActive }) =>
-                isActive
-                  ? 'border-b-2 border-blue-600 pb-1 text-blue-600'
-                  : 'text-gray-600 pb-1'
-              }
-            >
-              Past Studies
-            </NavLink>
-          </nav>
-
-          <button
-            onClick={handleSignOut}
-            className="text-red-600 hover:underline"
-          >
-            Logout
-          </button>
-        </div>
-
-        {/* Cards grid */}
-        <div className="flex-1 overflow-auto p-6">
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {studies[tab].map((s) => (
-              <div
-                key={s.id}
-                onClick={() => navigate(`study/${s.id}`)}
-                className="
-                  cursor-pointer
-                  rounded-lg
-                  border
-                  border-gray-300
-                  bg-white
-                  p-4
-                  shadow-sm
-                  hover:shadow-lg
-                  transition-shadow
-                  duration-200
-                "
-              >
-                <h3 className="text-lg font-semibold mb-1">
-                  {s.title}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {s.date}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="h-screen">
+      <button
+        onClick={handleSignOut}
+        className="absolute top-4 right-4 px-4 py-2 bg-red-500 text-white rounded"
+      >
+        Sign Out
+      </button>
+      <div className="flex items-center justify-center h-full">
+        <h1 className="text-6xl font-bold">Researcher</h1>
       </div>
     </div>
   );
