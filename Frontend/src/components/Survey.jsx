@@ -5,32 +5,34 @@ import './Survey.css';
 
 export default function Survey({ code, onComplete }) {
   const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers]   = useState([]);
-  const [idx, setIdx]           = useState(0);
+  const [answers, setAnswers]     = useState([]);
+  const [idx, setIdx]             = useState(0);
 
   useEffect(() => {
-    async function fetchQuestions() {
+    (async () => {
       const snap = await getDoc(doc(db, 'surveys', code));
       if (!snap.exists()) {
         alert('Invalid code');
         return;
       }
       const data = snap.data();
-      setQuestions(data.questions || []);
-      setAnswers(Array((data.questions || []).length).fill(''));
-    }
-    fetchQuestions();
+      const qs = data.questions || [];
+      setQuestions(qs);
+      setAnswers(Array(qs.length).fill(''));
+    })();
   }, [code]);
 
   const handleSubmit = async () => {
-    await addDoc(collection(db, 'surveys', code, 'responses'), {
-      answers,
-      timestamp: new Date()
-    });
-    onComplete();
+    const respDoc = await addDoc(
+      collection(db, 'surveys', code, 'responses'),
+      { answers, timestamp: new Date() }
+    );
+    onComplete(respDoc.id);
   };
 
-  if (!questions.length) return <p className="survey-loading">Loading questions…</p>;
+  if (!questions.length) {
+    return <p className="survey-loading">Loading questions…</p>;
+  }
 
   return (
     <div className="survey-container">
@@ -39,9 +41,9 @@ export default function Survey({ code, onComplete }) {
         className="survey-textarea"
         value={answers[idx]}
         onChange={e => {
-          const a = [...answers];
-          a[idx] = e.target.value;
-          setAnswers(a);
+          const copy = [...answers];
+          copy[idx] = e.target.value;
+          setAnswers(copy);
         }}
       />
       <div className="survey-nav">
@@ -49,23 +51,17 @@ export default function Survey({ code, onComplete }) {
           className="survey-btn survey-btn-prev"
           disabled={idx === 0}
           onClick={() => setIdx(i => i - 1)}
-        >
-          Previous
-        </button>
+        >Previous</button>
         {idx < questions.length - 1 ? (
           <button
             className="survey-btn survey-btn-next"
             onClick={() => setIdx(i => i + 1)}
-          >
-            Next
-          </button>
+          >Next</button>
         ) : (
           <button
             className="survey-btn survey-btn-submit"
             onClick={handleSubmit}
-          >
-            Submit
-          </button>
+          >Submit</button>
         )}
       </div>
     </div>
